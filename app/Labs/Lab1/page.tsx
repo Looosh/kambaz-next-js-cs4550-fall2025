@@ -1,9 +1,7 @@
 "use client";
-import LabsLayout from "../layout";
 
 export default function Lab1() {
     return (
-        <LabsLayout>
         <div id="wd-lab1">
             <h2>Lab 1</h2>
             <h3>HTML Examples</h3>
@@ -60,7 +58,7 @@ export default function Lab1() {
             <ul id="wd-my-books">
                 <li>Dune</li>
                 <li>Lord of the Rings</li>
-                <li>Ender's Game</li>
+                <li>Ender Game</li>
                 <li>Red Mars</li>
                 <li>The Forever War</li>
             </ul>
@@ -223,6 +221,5 @@ export default function Lab1() {
                 </form>
             </div>
         </div>
-        </LabsLayout>
     );
 }

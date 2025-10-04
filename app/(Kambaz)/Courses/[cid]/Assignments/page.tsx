@@ -1,64 +1,85 @@
+"use client";
+import { useState } from "react";
 import Link from "next/link";
+import { Button, Form, InputGroup, ListGroup, ListGroupItem } from "react-bootstrap";
+import { BsPlus, BsSearch } from "react-icons/bs";
+import { FaEllipsisV, FaRegEdit } from "react-icons/fa";
+import GreenCheckmark from "../Modules/GreenCheckmark";
 
 export default function Assignments() {
+  const [collapsed, setCollapsed] = useState(false);
+
+  const assignments = [
+    { id: 1, title: "A1: Intro Assignment", available: "Oct 1, 2025", due: "Oct 10, 2025 11:59 PM", points: "10 pts" },
+    { id: 2, title: "A2: Web Dev Basics", available: "Oct 5, 2025", due: "Oct 17, 2025 11:59 PM", points: "20 pts" },
+    { id: 3, title: "A3: Advanced Topics", available: "Oct 10, 2025", due: "Oct 24, 2025 11:59 PM", points: "30 pts" },
+  ];
+
   return (
-    <div id="wd-assignments">
-      <input
-        placeholder="Search for Assignments"
-        id="wd-search-assignment"
-      />
-      <button id="wd-add-assignment-group">+ Group</button>
-      <button id="wd-add-assignment">+ Assignment</button>
+    <div id="wd-assignments-screen" className="p-3">
+      {/* Header Buttons */}
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2 className="m-0">Assignments</h2>
+        <div className="d-flex gap-2">
+          <Button variant="success" className="d-flex align-items-center">
+            <BsPlus className="me-1" /> Group
+          </Button>
+          <Button variant="success" className="d-flex align-items-center">
+            <BsPlus className="me-1" /> Assignment
+          </Button>
+        </div>
+      </div>
 
-      <h3 id="wd-assignments-title">
-        ASSIGNMENTS 40% of Total <button>+</button>
-      </h3>
+      {/* Search Bar */}
+      <InputGroup className="mb-3">
+        <InputGroup.Text><BsSearch /></InputGroup.Text>
+        <Form.Control placeholder="Search for Assignment" />
+      </InputGroup>
 
-      <ul id="wd-assignment-list">
-        <li className="wd-assignment-list-item">
-          <Link
-            href="/Courses/1234/Assignments/123"
-            className="wd-assignment-link"
-          >
-            A1 - ENV + HTML
-          </Link>
-          <div>
-            Multiple Modules | <b>Not available until</b> May 6 at 12:00am |{" "}
-            <b>Due</b> May 13 at 11:59pm | 100 pts
+      {/* Assignments Parent Row */}
+      <ListGroup className="rounded-0" id="wd-assignments">
+        <ListGroupItem className="wd-module p-0 mb-3 fs-5 border-gray">
+          <div className="wd-title p-3 ps-2 bg-secondary d-flex justify-content-between align-items-center">
+            Assignments
+            <Button size="sm" variant="outline-secondary" onClick={() => setCollapsed(!collapsed)}>
+              {collapsed ? "Expand" : "Collapse"}
+            </Button>
           </div>
-        </li>
 
-        <li className="wd-assignment-list-item">
-          <Link
-            href="/Courses/1234/Assignments/234"
-            className="wd-assignment-link"
-          >
-            A2 - CSS + BOOTSTRAP
-          </Link>
-          <div>
-            Multiple Modules | <b>Not available until</b> May 13 at 12:00am |{" "}
-            <b>Due</b> May 20 at 11:59pm | 100 pts
-          </div>
-        </li>
+          {!collapsed && (
+            <ListGroup className="wd-lessons rounded-0">
+              {assignments.map((assignment) => (
+                <ListGroupItem
+                  key={assignment.id}
+                  className="p-3 mb-3 d-flex justify-content-between align-items-start wd-assignment border-left-green rounded"
+                >
+                  <div className="d-flex align-items-start gap-2">
+                    <FaRegEdit className="fs-5 text-secondary mt-1" />
+                    <div>
+                      {/* Clickable Assignment Title using relative path */}
+                      <Link
+                        href="Assignments/Edit"
+                        className="fw-bold fs-5 text-decoration-none text-dark"
+                      >
+                        {assignment.title}
+                      </Link>
+                      <div className="text-muted small">
+                        <div>Not available until {assignment.available}</div>
+                        <div>Due: {assignment.due}, {assignment.points}</div>
+                      </div>
+                    </div>
+                  </div>
 
-        <li className="wd-assignment-list-item">
-          <Link
-            href="/Courses/1234/Assignments/345"
-            className="wd-assignment-link"
-          >
-            A3 - JAVASCRIPT + REACT
-          </Link>
-          <div>
-            Multiple Modules | <b>Not available until</b> May 20 at 12:00am |{" "}
-            <b>Due</b> May 27 at 11:59pm | 100 pts
-          </div>
-        </li>
-
-        <li className="wd-assignment-list-item">
-          {/* Complete On Your Own */}
-        </li>
-      </ul>
+                  <div className="d-flex align-items-center gap-2">
+                    <GreenCheckmark />
+                    <FaEllipsisV className="fs-5" />
+                  </div>
+                </ListGroupItem>
+              ))}
+            </ListGroup>
+          )}
+        </ListGroupItem>
+      </ListGroup>
     </div>
   );
 }
-  

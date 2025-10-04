@@ -100,7 +100,7 @@ export default function Dashboard() {
                     ENVR 2340 Landforms
                   </CardTitle>
                   <CardText className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
-                    Earth's Landforms and Geomorphic Processes
+                    Earths Landforms and Geomorphic Processes
                   </CardText>
                   <Button variant="primary">Go</Button>
                 </CardBody>
@@ -119,7 +119,7 @@ export default function Dashboard() {
                     ENVR 2341 Lab for ENVR 2340
                   </CardTitle>
                   <CardText className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
-                    Lab Studies for earth's landforms
+                    Lab Studies for earths landforms
                   </CardText>
                   <Button variant="primary">Go</Button>
                 </CardBody>

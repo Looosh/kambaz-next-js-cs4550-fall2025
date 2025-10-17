@@ -1,76 +1,68 @@
-"use client";
-
-import { ListGroup, ListGroupItem } from "react-bootstrap";
-import Link from "next/link";
-import { FaRegCircleUser, FaInbox } from "react-icons/fa6";
+"use client"
 import { AiOutlineDashboard } from "react-icons/ai";
 import { IoCalendarOutline } from "react-icons/io5";
-import { LiaBookSolid, LiaFlaskSolid } from "react-icons/lia";
+import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
+import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { ListGroup, ListGroupItem } from "react-bootstrap";
 
 export default function KambazNavigation() {
+  const pathname = usePathname();
+  const links = [
+    { label: "Dashboard", path: "/Dashboard", icon: AiOutlineDashboard },
+    { label: "Courses",   path: "/Courses",  icon: LiaBookSolid },
+    { label: "Calendar",  path: "/Calendar", icon: IoCalendarOutline },
+    { label: "Inbox",     path: "/Inbox",    icon: FaInbox },
+    { label: "Labs",      path: "/Labs",     icon: LiaCogSolid },
+  ];
+
   return (
     <ListGroup
       id="wd-kambaz-navigation"
-      className="rounded-0 position-fixed top-0 bottom-0 d-none d-md-block bg-black z-2"
-      style={{ width: 110 }}
+      style={{ width: 120 }}
+      className="rounded-0 position-fixed bottom-0 top-0 d-none d-md-block bg-black z-2"
     >
-      {/* Northeastern Logo */}
       <ListGroupItem
-        as="a"
-        href="https://www.northeastern.edu/"
+        id="wd-neu-link"
         target="_blank"
-        className="bg-black border-0 text-center py-2"
+        href="https://www.northeastern.edu/"
+        action
+        className="bg-black border-0 text-center"
       >
-        <img src="/images/neulogo.webp" width="75px" alt="Northeastern University" />
+        <img src="/images/NEU.png" width="75px" />
       </ListGroupItem>
 
-      {/* Account */}
-      <ListGroupItem className="border-0 bg-black text-center py-2">
-        <Link href="/Account" className="text-decoration-none d-block text-white">
-          <FaRegCircleUser className="fs-2 mb-1 text-white" />
-          <div className="small">Account</div>
-        </Link>
+      <ListGroupItem
+        as={Link}
+        href="/Account"
+        className={`text-center border-0 bg-black ${
+          pathname.includes("Account") ? "bg-white text-danger" : "bg-black text-white"
+        }`}
+      >
+        <FaRegCircleUser
+          className={`fs-1 ${
+            pathname.includes("Account") ? "text-danger" : "text-white"
+          }`}
+        />
+        <br />
+        Account
       </ListGroupItem>
 
-      {/* Dashboard */}
-      <ListGroupItem className="border-0 bg-white text-center py-2">
-        <Link href="/Dashboard" className="text-decoration-none d-block text-danger">
-          <AiOutlineDashboard className="fs-2 mb-1 text-danger" />
-          <div className="small">Dashboard</div>
-        </Link>
-      </ListGroupItem>
-
-      {/* Courses */}
-      <ListGroupItem className="border-0 bg-black text-center py-2">
-        <Link href="/Courses" className="text-decoration-none d-block text-danger">
-          <LiaBookSolid className="fs-2 mb-1 text-danger" />
-          <div className="small">Courses</div>
-        </Link>
-      </ListGroupItem>
-
-      {/* Calendar */}
-      <ListGroupItem className="border-0 bg-black text-center py-2">
-        <Link href="/Calendar" className="text-decoration-none d-block text-danger">
-          <IoCalendarOutline className="fs-2 mb-1 text-danger" />
-          <div className="small">Calendar</div>
-        </Link>
-      </ListGroupItem>
-
-      {/* Inbox */}
-      <ListGroupItem className="border-0 bg-black text-center py-2">
-        <Link href="/Inbox" className="text-decoration-none d-block text-danger">
-          <FaInbox className="fs-2 mb-1 text-danger" />
-          <div className="small">Inbox</div>
-        </Link>
-      </ListGroupItem>
-
-      {/* Labs */}
-      <ListGroupItem className="border-0 bg-black text-center py-2">
-        <Link href="/Labs" className="text-decoration-none d-block text-danger">
-          <LiaFlaskSolid className="fs-2 mb-1 text-danger" />
-          <div className="small">Labs</div>
-        </Link>
-      </ListGroupItem>
+      {links.map((link) => (
+        <ListGroupItem
+          key={link.label} // Use label as the key
+          as={Link}
+          href={link.path}
+          className={`bg-black text-center border-0 ${
+            pathname.includes(link.label) ? "text-danger bg-white" : "text-white bg-black"
+          }`}
+        >
+          {link.icon({ className: "fs-1 text-danger" })}
+          <br />
+          {link.label}
+        </ListGroupItem>
+      ))}
     </ListGroup>
   );
 }

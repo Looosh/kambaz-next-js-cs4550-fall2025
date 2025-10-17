@@ -1,19 +1,20 @@
 "use client";
+
 import { useState } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Button, Form, InputGroup, ListGroup, ListGroupItem } from "react-bootstrap";
 import { BsPlus, BsSearch } from "react-icons/bs";
 import { FaEllipsisV, FaRegEdit } from "react-icons/fa";
 import GreenCheckmark from "../Modules/GreenCheckmark";
+import * as db from "../../../Database";
 
 export default function Assignments() {
   const [collapsed, setCollapsed] = useState(false);
+  const { cid } = useParams(); // current course ID
 
-  const assignments = [
-    { id: 1, title: "A1: Intro Assignment", available: "Oct 1, 2025", due: "Oct 10, 2025 11:59 PM", points: "10 pts" },
-    { id: 2, title: "A2: Web Dev Basics", available: "Oct 5, 2025", due: "Oct 17, 2025 11:59 PM", points: "20 pts" },
-    { id: 3, title: "A3: Advanced Topics", available: "Oct 10, 2025", due: "Oct 24, 2025 11:59 PM", points: "30 pts" },
-  ];
+  // Filter assignments for the current course
+  const assignments = db.assignments.filter(a => a.course === cid);
 
   return (
     <div id="wd-assignments-screen" className="p-3">
@@ -48,34 +49,38 @@ export default function Assignments() {
 
           {!collapsed && (
             <ListGroup className="wd-lessons rounded-0">
-              {assignments.map((assignment) => (
-                <ListGroupItem
-                  key={assignment.id}
-                  className="p-3 mb-3 d-flex justify-content-between align-items-start wd-assignment border-left-green rounded"
-                >
-                  <div className="d-flex align-items-start gap-2">
-                    <FaRegEdit className="fs-5 text-secondary mt-1" />
-                    <div>
-                      {/* Clickable Assignment Title using relative path */}
-                      <Link
-                        href="Assignments/Edit"
-                        className="fw-bold fs-5 text-decoration-none text-dark"
-                      >
-                        {assignment.title}
-                      </Link>
-                      <div className="text-muted small">
-                        <div>Not available until {assignment.available}</div>
-                        <div>Due: {assignment.due}, {assignment.points}</div>
+              {assignments.length > 0 ? (
+                assignments.map((assignment) => (
+                  <ListGroupItem
+                    key={assignment._id}
+                    className="p-3 mb-3 d-flex justify-content-between align-items-start wd-assignment border-left-green rounded"
+                  >
+                    <div className="d-flex align-items-start gap-2">
+                      <FaRegEdit className="fs-5 text-secondary mt-1" />
+                      <div>
+                        <Link
+                          href={`/Courses/${cid}/Assignments/Edit/${assignment._id}`}
+                          className="fw-bold fs-5 text-decoration-none text-dark"
+                        >
+                          {assignment.title}
+                        </Link>
+
+                        <div className="text-muted small">
+                          <div>Not available until {assignment.available}</div>
+                          <div>Due: {assignment.due}, {assignment.points} pts</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="d-flex align-items-center gap-2">
-                    <GreenCheckmark />
-                    <FaEllipsisV className="fs-5" />
-                  </div>
-                </ListGroupItem>
-              ))}
+                    <div className="d-flex align-items-center gap-2">
+                      <GreenCheckmark />
+                      <FaEllipsisV className="fs-5" />
+                    </div>
+                  </ListGroupItem>
+                ))
+              ) : (
+                <div className="text-muted p-3">No assignments for this course.</div>
+              )}
             </ListGroup>
           )}
         </ListGroupItem>

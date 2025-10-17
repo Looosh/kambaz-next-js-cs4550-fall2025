@@ -4,9 +4,30 @@ import { useParams } from "next/navigation";
 import { FaUserCircle } from "react-icons/fa";
 import * as db from "../../../../Database";
 
+type User = {
+  _id: string;
+  username: string;
+  password?: string;
+  firstName: string;
+  lastName: string;
+  email?: string;
+  dob?: string;
+  role: string;
+  loginId: string;
+  section: string;
+  lastActivity: string;
+  totalActivity: string;
+};
+
+type Enrollment = {
+  _id: string;
+  user: string;
+  course: string;
+};
+
 export default function PeopleTable() {
   const { cid } = useParams();
-  const { users, enrollments } = db;
+  const { users, enrollments } = db as { users: User[]; enrollments: Enrollment[] };
 
   const filteredUsers = users.filter((usr) =>
     enrollments.some(
@@ -28,7 +49,7 @@ export default function PeopleTable() {
           </tr>
         </thead>
         <tbody>
-          {filteredUsers.map((user: any) => (
+          {filteredUsers.map((user) => (
             <tr key={user._id}>
               <td className="wd-full-name text-nowrap">
                 <FaUserCircle className="me-2 fs-1 text-secondary" />

@@ -59,7 +59,7 @@ export default function Assignments() {
                       <FaRegEdit className="fs-5 text-secondary mt-1" />
                       <div>
                         <Link
-                          href={`/Courses/${cid}/Assignments/Edit/${assignment._id}`}
+                          href={`/Courses/${cid}/Assignments/${assignment._id}`}
                           className="fw-bold fs-5 text-decoration-none text-dark"
                         >
                           {assignment.title}

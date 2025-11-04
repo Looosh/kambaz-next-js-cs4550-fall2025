@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
@@ -12,7 +13,6 @@ import {
   updateModule,
 } from "./reducer";
 
-// Define the shape of a Module
 interface Module {
   _id: string;
   name: string;
@@ -20,12 +20,10 @@ interface Module {
   editing?: boolean;
 }
 
-// Redux slice state
 interface ModulesState {
   modules: Module[];
 }
 
-// Root Redux state
 interface RootState {
   modulesReducer: ModulesState;
 }
@@ -33,10 +31,13 @@ interface RootState {
 export default function Modules() {
   const { cid } = useParams();
   const dispatch = useDispatch();
-  const { modules } = useSelector(
-    (state: RootState) => state.modulesReducer
-  );
+  const { modules } = useSelector((state: RootState) => state.modulesReducer);
   const [moduleName, setModuleName] = useState("");
+
+  if (!cid || Array.isArray(cid)) {
+    return <div>Error: Course ID is missing or invalid</div>;
+  }
+  const courseId: string = cid;
 
   return (
     <div className="wd-modules p-3">
@@ -44,14 +45,15 @@ export default function Modules() {
         moduleName={moduleName}
         setModuleName={setModuleName}
         addModule={() => {
-          dispatch(addModule({ name: moduleName, course: cid }));
+          if (!moduleName.trim()) return; // prevent empty names
+          dispatch(addModule({ name: moduleName, course: courseId }));
           setModuleName("");
         }}
       />
 
       <ListGroup id="wd-modules" className="rounded-0">
         {modules
-          .filter((m: Module) => m.course === cid)
+          .filter((m: Module) => m.course === courseId)
           .map((module: Module) => (
             <ListGroup.Item
               key={module._id}

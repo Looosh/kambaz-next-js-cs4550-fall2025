@@ -17,6 +17,7 @@ interface Module {
   _id: string;
   name: string;
   course: string;
+  description: string; 
   editing?: boolean;
 }
 
@@ -31,7 +32,9 @@ interface RootState {
 export default function Modules() {
   const { cid } = useParams();
   const dispatch = useDispatch();
-  const { modules } = useSelector((state: RootState) => state.modulesReducer);
+  const { modules } = useSelector(
+    (state: RootState) => state.modulesReducer
+  );
   const [moduleName, setModuleName] = useState("");
 
   if (!cid || Array.isArray(cid)) {
@@ -39,16 +42,28 @@ export default function Modules() {
   }
   const courseId: string = cid;
 
+  const handleAddModule = () => {
+    if (!moduleName.trim()) return; 
+    dispatch(
+      addModule({
+        name: moduleName,
+        course: courseId,
+        description: "", 
+      })
+    );
+    setModuleName("");
+  };
+
+  const handleUpdateModule = (module: Module, updates: Partial<Module>) => {
+    dispatch(updateModule({ ...module, ...updates }));
+  };
+
   return (
     <div className="wd-modules p-3">
       <ModulesControls
         moduleName={moduleName}
         setModuleName={setModuleName}
-        addModule={() => {
-          if (!moduleName.trim()) return; // prevent empty names
-          dispatch(addModule({ name: moduleName, course: courseId }));
-          setModuleName("");
-        }}
+        addModule={handleAddModule}
       />
 
       <ListGroup id="wd-modules" className="rounded-0">
@@ -66,11 +81,11 @@ export default function Modules() {
                   className="w-50 d-inline-block"
                   defaultValue={module.name}
                   onChange={(e) =>
-                    dispatch(updateModule({ ...module, name: e.target.value }))
+                    handleUpdateModule(module, { name: e.target.value })
                   }
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      dispatch(updateModule({ ...module, editing: false }));
+                      handleUpdateModule(module, { editing: false });
                     }
                   }}
                 />

@@ -2,20 +2,35 @@ import { useState } from "react";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
-export default function ArrayStateVariable() {
-  const todos = useSelector((state: any) => state.todosReducer?.todos || []);
+// Define the shape of a Todo item
+interface Todo {
+  id: number;
+  title: string;
+}
 
-  const [array, setArray] = useState([1, 2, 3, 4, 5]);
+// Define the shape of the entire Redux state
+interface RootState {
+  todosReducer?: {
+    todos?: Todo[];
+  };
+}
+
+export default function ArrayStateVariable() {
+  // Properly type the selector
+  const todos = useSelector(
+    (state: RootState) => state.todosReducer?.todos || []
+  );
+
+  const [array, setArray] = useState<number[]>([1, 2, 3, 4, 5]);
 
   const addElement = () => {
     setArray([...array, Math.floor(Math.random() * 100)]);
   };
 
   const deleteElement = (index: number) => {
-    setArray(array.filter((item, i) => i !== index));
+    setArray(array.filter((_, i) => i !== index));
   };
 
-  // Log Redux todos here
   console.log("Todos from Redux:", todos);
 
   return (
@@ -23,7 +38,7 @@ export default function ArrayStateVariable() {
       <h2>Array State Variable</h2>
 
       <ListGroup>
-        {todos.map((todo: any) => (
+        {todos.map((todo) => (
           <ListGroupItem key={todo.id}>{todo.title}</ListGroupItem>
         ))}
       </ListGroup>

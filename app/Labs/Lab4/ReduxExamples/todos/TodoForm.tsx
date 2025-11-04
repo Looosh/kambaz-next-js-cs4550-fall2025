@@ -3,8 +3,26 @@ import { useSelector, useDispatch } from "react-redux";
 import { Button, FormControl } from "react-bootstrap";
 import { addTodo, updateTodo, setTodo } from "./todosReducer";
 
+// Define the shape of a single todo
+interface Todo {
+  id: number;
+  title: string;
+  completed: boolean;
+}
+
+// Shape of the todos slice
+interface TodosState {
+  todo: Todo;
+  todos: Todo[];
+}
+
+// Root state for Redux
+interface RootState {
+  todosReducer: TodosState;
+}
+
 export default function TodoForm() {
-  const { todo } = useSelector((state: any) => state.todosReducer);
+  const { todo } = useSelector((state: RootState) => state.todosReducer);
   const dispatch = useDispatch();
 
   return (

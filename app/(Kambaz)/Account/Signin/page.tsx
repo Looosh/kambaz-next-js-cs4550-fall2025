@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { setCurrentUser } from "../reducer";
@@ -7,8 +8,8 @@ import { useState } from "react";
 import * as db from "../../Database";
 import { FormControl, Button } from "react-bootstrap";
 
-// Define the shape of a user
 interface User {
+  _id: string;
   username: string;
   password: string;
   firstName?: string;
@@ -23,12 +24,22 @@ export default function Signin() {
   const dispatch = useDispatch();
 
   const signin = () => {
-    const user = db.users.find(
-      (u: User) =>
+
+    const found = db.users.find(
+      (u) =>
         u.username === credentials.username &&
         u.password === credentials.password
     );
-    if (!user) return; // Ignore invalid login
+
+    if (!found) return; 
+
+    const user: User = {
+      ...found,
+      role: ["USER", "ADMIN", "FACULTY", "STUDENT"].includes(found.role)
+        ? (found.role as "USER" | "ADMIN" | "FACULTY" | "STUDENT")
+        : undefined,
+    };
+
     dispatch(setCurrentUser(user));
     redirect("/Dashboard");
   };

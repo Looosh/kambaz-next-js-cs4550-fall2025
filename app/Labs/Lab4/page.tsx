@@ -11,7 +11,7 @@ import ObjectStateVariable from "./ObjectstateVariable";
 import ArrayStateVariable from "./ArrayStateVariable";
 import ParentStateComponent from "./ParentStateComponent";
 // import ReduxExamples from "./ReduxExamples/page";
-import store from "./store";
+// import store from "./store";
 import { Provider } from "react-redux";
 
 
@@ -24,7 +24,7 @@ export default function Lab4() {
     alert("Hello");
   }
   return (
-    <Provider store={store}>
+    // <Provider store={store}>
     <div id="wd-passing-functions">
       <h2>Lab 4</h2>
 
@@ -42,5 +42,5 @@ export default function Lab4() {
       {/* <ReduxExamples/> */}
 
     </div>
-    </Provider>
+    // </Provider>
 );}

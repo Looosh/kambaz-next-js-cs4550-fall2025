@@ -1,17 +1,18 @@
-"use client";
-import HelloRedux from "./HelloRedux";
-import CounterRedux from "./CounterRedux";
-import AddRedux from "./AddRedux";
-import TodoList from "./todos/TodoList";
+// app/Labs/Lab4/store.ts
+import { configureStore } from "@reduxjs/toolkit";
+import helloReducer from "../ReduxExamples/HelloRedux/helloReducer";
+import counterReducer from "../ReduxExamples/CounterRedux/counterReducer";
+import addReducer from "../ReduxExamples/AddRedux/addReducer";
+import todosReducer from "../ReduxExamples/todos/todosReducer";
 
-export default function ReduxExamples() {
-  return (
-    <div>
-      <h2>Redux Examples</h2>
-      <HelloRedux />
-      <CounterRedux />
-      <AddRedux />
-      <TodoList />
-    </div>
-  );
-}
+const store = configureStore({
+  reducer: {
+    helloReducer,
+    counterReducer,
+    addReducer,
+    todosReducer,
+  },
+});
+
+export type RootState = ReturnType<typeof store.getState>;
+export default store;

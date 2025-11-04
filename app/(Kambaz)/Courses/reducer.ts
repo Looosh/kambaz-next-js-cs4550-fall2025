@@ -4,9 +4,15 @@ import { v4 as uuidv4 } from "uuid";
 
 export interface Course {
   _id: string;
+  name: string;             
+  description?: string;
+  [key: string]: unknown;   
+}
+
+interface AddCoursePayload {
   name: string;
   description?: string;
-  [key: string]: unknown; // <-- changed from 'any' to 'unknown'
+  [key: string]: unknown;
 }
 
 interface CoursesState {
@@ -21,7 +27,7 @@ const coursesSlice = createSlice({
   name: "courses",
   initialState,
   reducers: {
-    addNewCourse: (state, action: PayloadAction<Omit<Course, "_id">>) => {
+    addNewCourse: (state, action: PayloadAction<AddCoursePayload>) => {
       const newCourse: Course = { ...action.payload, _id: uuidv4() };
       state.courses = [...state.courses, newCourse];
     },

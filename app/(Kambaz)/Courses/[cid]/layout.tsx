@@ -24,7 +24,13 @@ interface RootState {
 export default function CoursesLayout({ children }: { children: ReactNode }) {
   const { cid } = useParams();
   const { courses } = useSelector((state: RootState) => state.coursesReducer);
-  const course = courses.find((course: Course) => course._id === cid);
+
+  if (!cid || Array.isArray(cid)) {
+    return <div>Error: Course ID is missing or invalid</div>;
+  }
+  const courseId: string = cid;
+
+  const course = courses.find((course: Course) => course._id === courseId);
 
   const [sidebarVisible, setSidebarVisible] = useState(true);
 
@@ -43,7 +49,7 @@ export default function CoursesLayout({ children }: { children: ReactNode }) {
         {/* Sidebar is hidden/shown based on state */}
         {sidebarVisible && (
           <div>
-            <CourseNavigation cid={cid} />
+            <CourseNavigation cid={courseId} />
           </div>
         )}
         <div className="flex-fill">{children}</div>

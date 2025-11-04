@@ -28,7 +28,10 @@ export default function TodoList() {
       <TodoForm />
       <ListGroup>
         {todos.map((todo: Todo) => (
-          <TodoItem key={todo.id} todo={todo} />
+          <TodoItem 
+            key={todo.id.toString()} 
+            todo={{ ...todo, id: todo.id.toString() }} 
+          />
         ))}
       </ListGroup>
     </div>

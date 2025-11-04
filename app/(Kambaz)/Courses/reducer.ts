@@ -6,7 +6,7 @@ export interface Course {
   _id: string;
   name: string;
   description?: string;
-  [key: string]: any;
+  [key: string]: unknown; // <-- changed from 'any' to 'unknown'
 }
 
 interface CoursesState {

@@ -25,14 +25,12 @@ export default function CoursesLayout({ children }: { children: ReactNode }) {
   const { cid } = useParams();
   const { courses } = useSelector((state: RootState) => state.coursesReducer);
 
-  if (!cid || Array.isArray(cid)) {
-    return <div>Error: Course ID is missing or invalid</div>;
-  }
-  const courseId: string = cid;
-
-  const course = courses.find((course: Course) => course._id === courseId);
-
+  // Always call hooks first
   const [sidebarVisible, setSidebarVisible] = useState(true);
+
+  // Validate courseId
+  const courseId = !cid || Array.isArray(cid) ? null : cid;
+  const course = courseId ? courses.find((c: Course) => c._id === courseId) : null;
 
   return (
     <div id="wd-courses">
@@ -42,17 +40,18 @@ export default function CoursesLayout({ children }: { children: ReactNode }) {
           style={{ cursor: "pointer" }}
           onClick={() => setSidebarVisible(!sidebarVisible)}
         />
-        {course?.name}
+        {course?.name || "Course not found"}
       </h2>
       <hr />
       <div className="d-flex">
-        {/* Sidebar is hidden/shown based on state */}
-        {sidebarVisible && (
+        {sidebarVisible && courseId && (
           <div>
             <CourseNavigation cid={courseId} />
           </div>
         )}
-        <div className="flex-fill">{children}</div>
+        <div className="flex-fill">
+          {!courseId ? <div>Error: Invalid Course ID</div> : children}
+        </div>
       </div>
     </div>
   );

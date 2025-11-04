@@ -1,11 +1,9 @@
-// app/Labs/Lab4/ReduxExamples/todos/TodoForm.tsx
 "use client";
-
 import React from "react";
 import { FormControl, Button, ListGroupItem } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { addTodo, updateTodo, setTodo, Todo } from "./todosReducer";
-import { RootState } from "../../store";
+import { addTodo, updateTodo, setTodo } from "./todosReducer";
+import type { RootState } from "../../store";
 
 export default function TodoForm() {
   const { todo } = useSelector((state: RootState) => state.todosReducer);
@@ -16,17 +14,12 @@ export default function TodoForm() {
       <Button onClick={() => dispatch(addTodo(todo))} id="wd-add-todo-click">
         Add
       </Button>
-      <Button
-        onClick={() => dispatch(updateTodo(todo))}
-        id="wd-update-todo-click"
-      >
+      <Button onClick={() => dispatch(updateTodo(todo))} id="wd-update-todo-click">
         Update
       </Button>
       <FormControl
         value={todo.title}
-        onChange={(e) =>
-          dispatch(setTodo({ ...todo, title: e.target.value }))
-        }
+        onChange={(e) => dispatch(setTodo({ ...todo, title: e.target.value }))}
       />
     </ListGroupItem>
   );

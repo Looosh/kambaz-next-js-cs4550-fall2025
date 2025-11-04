@@ -1,30 +1,21 @@
+"use client";
 import React from "react";
+import { ListGroupItem, Button } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { Button, ListGroupItem } from "react-bootstrap";
-import { deleteTodo, setTodo } from "./todosReducer";
+import { deleteTodo, setTodo, Todo } from "./todosReducer";
 
-export default function TodoItem({ todo }: { todo: { id: string; title: string } }) {
+export default function TodoItem({ todo }: { todo: Todo }) {
   const dispatch = useDispatch();
 
   return (
-    <ListGroupItem className="d-flex justify-content-between align-items-center">
-      <span>{todo.title}</span>
-      <div className="d-flex gap-2">
-        <Button
-          variant="primary"
-          id="wd-set-todo-click"
-          onClick={() => dispatch(setTodo(todo))}
-        >
-          Edit
-        </Button>
-        <Button
-          variant="danger"
-          id="wd-delete-todo-click"
-          onClick={() => dispatch(deleteTodo(todo.id))}
-        >
-          Delete
-        </Button>
-      </div>
+    <ListGroupItem key={todo.id}>
+      <Button onClick={() => dispatch(deleteTodo(todo.id!))} id="wd-delete-todo-click">
+        Delete
+      </Button>
+      <Button onClick={() => dispatch(setTodo(todo))} id="wd-set-todo-click">
+        Edit
+      </Button>
+      {todo.title}
     </ListGroupItem>
   );
 }

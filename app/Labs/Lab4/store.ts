@@ -1,4 +1,3 @@
-// app/Labs/Lab4/store.ts
 import { configureStore } from "@reduxjs/toolkit";
 import helloReducer from "./ReduxExamples/HelloRedux/helloReducer";
 import counterReducer from "./ReduxExamples/CounterRedux/counterReducer";
@@ -14,8 +13,5 @@ const store = configureStore({
   },
 });
 
-// TypeScript: extract RootState and AppDispatch
 export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
-
 export default store;

@@ -5,9 +5,32 @@ import Link from "next/link";
 import { useState } from "react";
 import { deleteAssignment } from "../Assignments/reducer";
 
+// Define the shape of an assignment
+interface Assignment {
+  _id: string;
+  name: string;
+  description?: string;
+  points?: string;
+  dueDate?: string;
+  availableFrom?: string;
+  availableUntil?: string;
+}
+
+// Redux slice state
+interface AssignmentsState {
+  assignments: Assignment[];
+}
+
+// Root Redux state
+interface RootState {
+  assignmentsReducer: AssignmentsState;
+}
+
 export default function Assignments() {
   const dispatch = useDispatch();
-  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const { assignments } = useSelector(
+    (state: RootState) => state.assignmentsReducer
+  );
   const [showConfirm, setShowConfirm] = useState(false);
   const [assignmentToDelete, setAssignmentToDelete] = useState<string | null>(null);
 
@@ -31,7 +54,7 @@ export default function Assignments() {
       </div>
 
       <ListGroup>
-        {assignments.map((a: any) => (
+        {assignments.map((a: Assignment) => (
           <ListGroup.Item
             key={a._id}
             className="d-flex justify-content-between align-items-center"

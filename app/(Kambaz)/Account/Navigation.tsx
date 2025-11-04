@@ -4,14 +4,25 @@ import { usePathname } from "next/navigation";
 import { Nav, NavItem, NavLink } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
+interface AccountState {
+  currentUser: { id: number; name: string } | null;
+}
+
+interface RootState {
+  accountReducer: AccountState;
+}
+
 export default function AccountNavigation() {
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { currentUser } = useSelector(
+    (state: RootState) => state.accountReducer
+  );
+
   const links = currentUser ? ["Profile"] : ["Signin", "Signup"];
   const pathname = usePathname();
 
   return (
     <Nav variant="pills">
-      {links.map(link => (
+      {links.map((link) => (
         <NavItem key={link}>
           <NavLink
             as={Link}

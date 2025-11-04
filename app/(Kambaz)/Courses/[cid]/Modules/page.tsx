@@ -12,10 +12,30 @@ import {
   updateModule,
 } from "./reducer";
 
+// Define the shape of a Module
+interface Module {
+  _id: string;
+  name: string;
+  course: string;
+  editing?: boolean;
+}
+
+// Redux slice state
+interface ModulesState {
+  modules: Module[];
+}
+
+// Root Redux state
+interface RootState {
+  modulesReducer: ModulesState;
+}
+
 export default function Modules() {
   const { cid } = useParams();
   const dispatch = useDispatch();
-  const { modules } = useSelector((state: any) => state.modulesReducer);
+  const { modules } = useSelector(
+    (state: RootState) => state.modulesReducer
+  );
   const [moduleName, setModuleName] = useState("");
 
   return (
@@ -31,8 +51,8 @@ export default function Modules() {
 
       <ListGroup id="wd-modules" className="rounded-0">
         {modules
-          .filter((m: any) => m.course === cid)
-          .map((module: any) => (
+          .filter((m: Module) => m.course === cid)
+          .map((module: Module) => (
             <ListGroup.Item
               key={module._id}
               className="d-flex justify-content-between align-items-center"
@@ -56,8 +76,8 @@ export default function Modules() {
 
               <ModuleControlButtons
                 moduleId={module._id}
-                deleteModule={(id) => dispatch(deleteModule(id))}
-                editModule={(id) => dispatch(editModule(id))}
+                deleteModule={(id: string) => dispatch(deleteModule(id))}
+                editModule={(id: string) => dispatch(editModule(id))}
               />
             </ListGroup.Item>
           ))}

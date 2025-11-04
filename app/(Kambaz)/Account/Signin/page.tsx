@@ -7,13 +7,24 @@ import { useState } from "react";
 import * as db from "../../Database";
 import { FormControl, Button } from "react-bootstrap";
 
+// Define the shape of a user
+interface User {
+  username: string;
+  password: string;
+  firstName?: string;
+  lastName?: string;
+  dob?: string;
+  email?: string;
+  role?: "USER" | "ADMIN" | "FACULTY" | "STUDENT";
+}
+
 export default function Signin() {
   const [credentials, setCredentials] = useState({ username: "", password: "" });
   const dispatch = useDispatch();
 
   const signin = () => {
     const user = db.users.find(
-      (u: any) =>
+      (u: User) =>
         u.username === credentials.username &&
         u.password === credentials.password
     );
@@ -29,7 +40,9 @@ export default function Signin() {
         placeholder="username"
         className="mb-2"
         value={credentials.username}
-        onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+        onChange={(e) =>
+          setCredentials({ ...credentials, username: e.target.value })
+        }
         id="wd-username"
       />
       <FormControl
@@ -37,7 +50,9 @@ export default function Signin() {
         type="password"
         className="mb-2"
         value={credentials.password}
-        onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+        onChange={(e) =>
+          setCredentials({ ...credentials, password: e.target.value })
+        }
         id="wd-password"
       />
       <Button onClick={signin} className="w-100 mb-2" id="wd-signin-btn">

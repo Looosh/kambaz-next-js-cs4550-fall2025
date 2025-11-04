@@ -4,7 +4,7 @@ import * as db from "../Database";
 import { useSelector } from "react-redux";
 import { Row, Col, Card, CardBody, CardTitle, CardText, Button } from "react-bootstrap";
 
-// Define types for clarity
+// Define types
 type Course = {
   _id: string;
   name: string;
@@ -28,21 +28,21 @@ type User = {
   email?: string;
 };
 
+// Redux slices
+interface RootState {
+  accountReducer: { currentUser: User | null };
+  coursesReducer: { courses: Course[] };
+}
+
 // Dashboard Component
 export default function Dashboard() {
-  // Get currentUser safely
-  const currentUser = useSelector((state: any) => state.accountReducer.currentUser) as User | null;
+  const currentUser = useSelector((state: RootState) => state.accountReducer.currentUser);
+  const courses = useSelector((state: RootState) => state.coursesReducer.courses);
 
-  // Get courses safely
-  const courses = useSelector((state: any) => state.coursesReducer.courses) as Course[] | undefined;
-
-  // Get enrollments from database
   const enrollments: Enrollment[] = db.enrollments;
 
-  // Show loading if currentUser or courses are not ready
   if (!currentUser || !courses) return <div>This user has no courses, check user database...</div>;
 
-  // Filter courses that currentUser is enrolled in
   const enrolledCourses = courses.filter((course) =>
     enrollments.some(
       (enrollment) =>
@@ -58,7 +58,7 @@ export default function Dashboard() {
       <h2>Published Courses ({enrolledCourses.length})</h2>
       <hr />
       <Row xs={1} md={5} className="g-4">
-        {enrolledCourses.map((course: Course) => (
+        {enrolledCourses.map((course) => (
           <Col key={course._id} className="wd-dashboard-course" style={{ width: "300px" }}>
             <Card>
               {course.image && course.image.startsWith("/") ? (

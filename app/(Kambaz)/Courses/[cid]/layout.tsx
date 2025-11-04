@@ -6,12 +6,26 @@ import CourseNavigation from "./Navigation";
 import { useSelector } from "react-redux";
 import { useParams } from "next/navigation";
 
+interface Course {
+  _id: string;
+  name: string;
+  description?: string;
+  [key: string]: any;
+}
+
+interface CoursesState {
+  courses: Course[];
+}
+
+interface RootState {
+  coursesReducer: CoursesState;
+}
+
 export default function CoursesLayout({ children }: { children: ReactNode }) {
   const { cid } = useParams();
-  const { courses } = useSelector((state: any) => state.coursesReducer);
-  const course = courses.find((course: any) => course._id === cid);
+  const { courses } = useSelector((state: RootState) => state.coursesReducer);
+  const course = courses.find((course: Course) => course._id === cid);
 
-  // State to toggle sidebar visibility
   const [sidebarVisible, setSidebarVisible] = useState(true);
 
   return (

@@ -5,14 +5,35 @@ import { addAssignment, updateAssignment } from "../reducer";
 import { Form, Button } from "react-bootstrap";
 import { useState } from "react";
 
+interface Assignment {
+  _id?: string;
+  name: string;
+  description: string;
+  points: string;
+  dueDate: string;
+  availableFrom: string;
+  availableUntil: string;
+}
+
+interface AssignmentsState {
+  assignments: Assignment[];
+}
+
+interface RootState {
+  assignmentsReducer: AssignmentsState;
+}
+
 export default function AssignmentEditor() {
   const { aid } = useParams();
   const router = useRouter();
   const dispatch = useDispatch();
-  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
 
-  const existing = assignments.find((a: any) => a._id === aid);
-  const [assignment, setAssignment] = useState(
+  const { assignments } = useSelector(
+    (state: RootState) => state.assignmentsReducer
+  );
+
+  const existing = assignments.find((a: Assignment) => a._id === aid);
+  const [assignment, setAssignment] = useState<Assignment>(
     existing || {
       name: "",
       description: "",

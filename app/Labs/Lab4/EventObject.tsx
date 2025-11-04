@@ -1,20 +1,26 @@
 "use client";
 import { useState } from "react";
 
+interface EventInfo {
+  type: string;
+  target: string;
+}
+
 export default function EventObject() {
-  const [event, setEvent] = useState(null);
+  const [event, setEvent] = useState<EventInfo | null>(null);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    (e.target as HTMLElement) = (e.target as HTMLElement).outerHTML;
-    delete (e as any).view;
-    setEvent(e);
+    setEvent({
+      type: e.type,
+      target: e.currentTarget.outerHTML,
+    });
   };
 
   return (
     <div>
       <h2>Event Object</h2>
       <button
-        onClick={(e) => handleClick(e)}
+        onClick={handleClick}
         className="btn btn-primary"
         id="wd-display-event-obj-click"
       >

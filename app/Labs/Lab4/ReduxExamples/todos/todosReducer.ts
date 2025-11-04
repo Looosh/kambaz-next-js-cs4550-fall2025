@@ -1,32 +1,46 @@
-import { createSlice } from "@reduxjs/toolkit";
+// app/Labs/Lab4/ReduxExamples/todos/todosReducer.ts
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
+export interface Todo {
+  id: string;
+  title: string;
+}
+
+interface TodosState {
+  todos: Todo[];
+  todo: Todo;
+}
+
+const initialState: TodosState = {
   todos: [
     { id: "1", title: "Learn React" },
     { id: "2", title: "Learn Node" },
   ],
-  todo: { title: "Learn Mongo" },
+  todo: { id: "0", title: "Learn Mongo" }, // ensure id exists
 };
 
 const todosSlice = createSlice({
   name: "todos",
   initialState,
   reducers: {
-    addTodo: (state, action) => {
-      const newTodo = { ...action.payload, id: Date.now().toString() };
+    addTodo: (state, action: PayloadAction<Todo>) => {
+      const newTodo: Todo = {
+        ...action.payload,
+        id: new Date().getTime().toString(),
+      };
       state.todos.push(newTodo);
-      state.todo = { title: "" };
+      state.todo = { id: "0", title: "" };
     },
-    deleteTodo: (state, action) => {
-      state.todos = state.todos.filter((t) => t.id !== action.payload);
+    deleteTodo: (state, action: PayloadAction<string>) => {
+      state.todos = state.todos.filter((todo) => todo.id !== action.payload);
     },
-    updateTodo: (state, action) => {
-      state.todos = state.todos.map((t) =>
-        t.id === action.payload.id ? action.payload : t
+    updateTodo: (state, action: PayloadAction<Todo>) => {
+      state.todos = state.todos.map((todo) =>
+        todo.id === action.payload.id ? action.payload : todo
       );
-      state.todo = { title: "" };
+      state.todo = { id: "0", title: "" };
     },
-    setTodo: (state, action) => {
+    setTodo: (state, action: PayloadAction<Todo>) => {
       state.todo = action.payload;
     },
   },

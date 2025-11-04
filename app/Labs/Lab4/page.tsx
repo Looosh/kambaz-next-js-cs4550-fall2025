@@ -10,7 +10,7 @@ import DateStateVariable from "./DateStateVariable";
 import ObjectStateVariable from "./ObjectstateVariable";
 import ArrayStateVariable from "./ArrayStateVariable";
 import ParentStateComponent from "./ParentStateComponent";
-import ReduxExamples from "./ReduxExamples/page";
+// import ReduxExamples from "./ReduxExamples/page";
 import store from "./store";
 import { Provider } from "react-redux";
 
@@ -39,7 +39,7 @@ export default function Lab4() {
       <ObjectStateVariable/>
       <ArrayStateVariable/>
       <ParentStateComponent/>
-      <ReduxExamples/>
+      {/* <ReduxExamples/> */}
 
     </div>
     </Provider>

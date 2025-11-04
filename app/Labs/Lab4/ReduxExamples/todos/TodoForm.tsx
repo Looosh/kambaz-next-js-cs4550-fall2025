@@ -1,52 +1,33 @@
+// app/Labs/Lab4/ReduxExamples/todos/TodoForm.tsx
+"use client";
+
 import React from "react";
+import { FormControl, Button, ListGroupItem } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, FormControl } from "react-bootstrap";
-import { addTodo, updateTodo, setTodo } from "./todosReducer";
-
-// Define the shape of a single todo
-interface Todo {
-  id: number;
-  title: string;
-  completed: boolean;
-}
-
-// Shape of the todos slice
-interface TodosState {
-  todo: Todo;
-  todos: Todo[];
-}
-
-// Root state for Redux
-interface RootState {
-  todosReducer: TodosState;
-}
+import { addTodo, updateTodo, setTodo, Todo } from "./todosReducer";
+import { RootState } from "../../store";
 
 export default function TodoForm() {
   const { todo } = useSelector((state: RootState) => state.todosReducer);
   const dispatch = useDispatch();
 
   return (
-    <div className="d-flex gap-2 mb-3">
+    <ListGroupItem>
+      <Button onClick={() => dispatch(addTodo(todo))} id="wd-add-todo-click">
+        Add
+      </Button>
+      <Button
+        onClick={() => dispatch(updateTodo(todo))}
+        id="wd-update-todo-click"
+      >
+        Update
+      </Button>
       <FormControl
         value={todo.title}
         onChange={(e) =>
           dispatch(setTodo({ ...todo, title: e.target.value }))
         }
       />
-      <Button
-        variant="warning"
-        id="wd-update-todo-click"
-        onClick={() => dispatch(updateTodo(todo))}
-      >
-        Update
-      </Button>
-      <Button
-        variant="success"
-        id="wd-add-todo-click"
-        onClick={() => dispatch(addTodo(todo))}
-      >
-        Add
-      </Button>
-    </div>
+    </ListGroupItem>
   );
 }

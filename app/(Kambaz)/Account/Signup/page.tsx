@@ -1,35 +1,35 @@
 "use client";
 import Link from "next/link";
-import { Form, FormControl, Button } from "react-bootstrap";
+import { redirect } from "next/dist/client/components/navigation";
+import { setCurrentUser } from "../reducer";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
+import * as db from "../../Database";
+import { FormControl, Button } from "react-bootstrap";
 
-export default function Signup() {
+export default function Signin() {
+ const [credentials, setCredentials] = useState<any>({});
+ const dispatch = useDispatch();
+ const signin = () => {
+   const user = db.users.find(
+     (u: any) =>
+       u.username === credentials.username &&
+       u.password === credentials.password
+   );
+   if (!user) return;
+   dispatch(setCurrentUser(user));
+   redirect("/Dashboard");
+ };
   return (
-    <div id="wd-signup-screen" className="d-flex flex-column align-items-center p-5" style={{ maxWidth: "400px", margin: "0 auto" }}>
-      <h1 className="mb-4">Sign Up</h1>
-
-      <Form className="w-100">
-        <Form.Control
-          id="wd-name"
-          placeholder="Full Name"
-          className="mb-3"
-        />
-        <Form.Control
-          id="wd-password"
-          type="password"
-          placeholder="Password"
-          className="mb-3"
-        />
-
-        <Link href="/Account/Profile" className="btn btn-primary w-100 mb-3">
-          Sign Up
-        </Link>
-
-        <div className="text-center">
-          <Link href="/Account/Signin" className="text-primary">
-            Sign In
-          </Link>
-        </div>
-      </Form>
+    <div id="wd-signin-screen">
+      <h1>Sign in</h1>
+      <FormControl defaultValue={credentials.username}
+             onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+             className="mb-2" placeholder="username" id="wd-username" />
+      <FormControl defaultValue={credentials.password}
+             onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+             className="mb-2" placeholder="password" type="password" id="wd-password" />
+      <Button onClick={signin} id="wd-signin-btn" className="w-100" > Sign in </Button>
+      <Link id="wd-signup-link" href="/Kambaz/Account/Signup"> Sign up </Link>
     </div>
-  );
-}
+);}

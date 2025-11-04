@@ -1,36 +1,82 @@
-import Link from "next/link";
-import * as db from "../Database";
-import { Button, Card, CardBody, CardImg, CardText, CardTitle, Col, Row } from "react-bootstrap";
+"use client";
 
+import * as db from "../Database";
+import { useSelector } from "react-redux";
+import { Row, Col, Card, CardBody, CardTitle, CardText, Button } from "react-bootstrap";
+
+// Define types for clarity
+type Course = {
+  _id: string;
+  name: string;
+  number?: string;
+  startDate?: string;
+  endDate?: string;
+  image?: string;
+  description?: string;
+};
+
+type Enrollment = {
+  user: string;
+  course: string;
+};
+
+type User = {
+  _id: string;
+  username: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+};
+
+// Dashboard Component
 export default function Dashboard() {
-  const courses = db.courses;
+  // Get currentUser safely
+  const currentUser = useSelector((state: any) => state.accountReducer.currentUser) as User | null;
+
+  // Get courses safely
+  const courses = useSelector((state: any) => state.coursesReducer.courses) as Course[] | undefined;
+
+  // Get enrollments from database
+  const enrollments: Enrollment[] = db.enrollments;
+
+  // Show loading if currentUser or courses are not ready
+  if (!currentUser || !courses) return <div>This user has no courses, check user database...</div>;
+
+  // Filter courses that currentUser is enrolled in
+  const enrolledCourses = courses.filter((course) =>
+    enrollments.some(
+      (enrollment) =>
+        enrollment.user === currentUser._id &&
+        enrollment.course === course._id
+    )
+  );
+
   return (
-    <div id="wd-dashboard">
-      <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
-      <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
-      <div id="wd-dashboard-courses">
-        <Row xs={1} md={5} className="g-4">
-          {courses.map((course) => (
-            <Col key={course._id} className="wd-dashboard-course" style={{ width: "300px" }}>
-              <Card>
-                <Link href={`/Courses/${course._id}/Home`}
-                      className="wd-dashboard-course-link text-decoration-none text-dark">
-                  <CardImg src="/images/reactjs.jpg" variant="top" width="100%" height={160} />
-                  <CardBody className="card-body">
-                    <CardTitle className="wd-dashboard-course-title text-nowrap overflow-hidden">
-                      {course.name}
-                    </CardTitle>
-                    <CardText className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
-                      {course.description}
-                    </CardText>
-                    <Button variant="primary">Go</Button>
-                  </CardBody>
-                </Link>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </div>
+    <div className="p-4" id="wd-dashboard">
+      <h1>Dashboard</h1>
+      <hr />
+      <h2>Published Courses ({enrolledCourses.length})</h2>
+      <hr />
+      <Row xs={1} md={5} className="g-4">
+        {enrolledCourses.map((course: Course) => (
+          <Col key={course._id} className="wd-dashboard-course" style={{ width: "300px" }}>
+            <Card>
+              {course.image && course.image.startsWith("/") ? (
+                <Card.Img src={course.image} variant="top" />
+              ) : (
+                <div style={{ backgroundColor: course.image || "#ccc", height: 160, width: "100%" }} />
+              )}
+              <CardBody>
+                <CardTitle>{course.name}</CardTitle>
+                <CardText>{course.description}</CardText>
+                <Button href={`/Courses/${course._id}/Home`} className="me-2">
+                  Go
+                </Button>
+              </CardBody>
+            </Card>
+          </Col>
+        ))}
+      </Row>
     </div>
   );
 }

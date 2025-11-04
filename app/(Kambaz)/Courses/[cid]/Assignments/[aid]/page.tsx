@@ -1,93 +1,115 @@
 "use client";
-
-import { useParams } from "next/navigation";
-import Link from "next/link";
-import * as db from "../../../../Database"; // adjust path if needed
+import { useParams, useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { addAssignment, updateAssignment } from "../reducer";
+import { Form, Button } from "react-bootstrap";
+import { useState } from "react";
 
 export default function AssignmentEditor() {
-  const { cid, aid } = useParams();
+  const { aid } = useParams();
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
 
-  // Find the assignment in the database
-  const assignment = db.assignments.find(a => a._id === aid);
+  const existing = assignments.find((a: any) => a._id === aid);
+  const [assignment, setAssignment] = useState(
+    existing || {
+      name: "",
+      description: "",
+      points: "",
+      dueDate: "",
+      availableFrom: "",
+      availableUntil: "",
+    }
+  );
 
-  if (!assignment) return <div>Assignment not found</div>;
+  const handleSave = () => {
+    if (aid === "new") dispatch(addAssignment(assignment));
+    else dispatch(updateAssignment(assignment));
+    router.push("/Courses/Assignments");
+  };
+
+  const handleCancel = () => router.push("/Courses/Assignments");
 
   return (
-    <div id="wd-assignments-editor" className="p-3" style={{ maxWidth: "800px" }}>
-      <h2>Edit Assignment</h2>
+    <div className="p-4">
+      <h2>{aid === "new" ? "New Assignment" : "Edit Assignment"}</h2>
+      <Form>
+        <Form.Group className="mb-3">
+          <Form.Label>Name</Form.Label>
+          <Form.Control
+            value={assignment.name}
+            onChange={(e) =>
+              setAssignment({ ...assignment, name: e.target.value })
+            }
+          />
+        </Form.Group>
 
-      <label htmlFor="wd-name">Assignment Name</label><br />
-      <input id="wd-name" defaultValue={assignment.title} /><br /><br />
+        <Form.Group className="mb-3">
+          <Form.Label>Description</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows={3}
+            value={assignment.description}
+            onChange={(e) =>
+              setAssignment({ ...assignment, description: e.target.value })
+            }
+          />
+        </Form.Group>
 
-      <label htmlFor="wd-description">Description</label><br />
-      <textarea id="wd-description" rows={5} cols={50} defaultValue={assignment.description}></textarea><br /><br />
+        <Form.Group className="mb-3">
+          <Form.Label>Points</Form.Label>
+          <Form.Control
+            type="number"
+            value={assignment.points}
+            onChange={(e) =>
+              setAssignment({ ...assignment, points: e.target.value })
+            }
+          />
+        </Form.Group>
 
-      <table>
-        <tbody>
-          <tr>
-            <td align="right" valign="top">
-              <label htmlFor="wd-points">Points</label>
-            </td>
-            <td>
-              <input id="wd-points" type="number" defaultValue={assignment.points} />
-            </td>
-          </tr>
+        <Form.Group className="mb-3">
+          <Form.Label>Due Date</Form.Label>
+          <Form.Control
+            type="date"
+            value={assignment.dueDate}
+            onChange={(e) =>
+              setAssignment({ ...assignment, dueDate: e.target.value })
+            }
+          />
+        </Form.Group>
 
-          <tr>
-            <td align="right" valign="top">
-              <label htmlFor="wd-group">Assignment Group</label>
-            </td>
-            <td>
-              <select id="wd-group" defaultValue={assignment.group}>
-                <option>ASSIGNMENTS</option>
-                <option>QUIZZES</option>
-                <option>EXAMS</option>
-                <option>PROJECTS</option>
-              </select>
-            </td>
-          </tr>
+        <Form.Group className="mb-3">
+          <Form.Label>Available From</Form.Label>
+          <Form.Control
+            type="date"
+            value={assignment.availableFrom}
+            onChange={(e) =>
+              setAssignment({ ...assignment, availableFrom: e.target.value })
+            }
+          />
+        </Form.Group>
 
-          {/* <tr>
-            <td align="right" valign="top">
-              <label htmlFor="wd-submission">Submission Type</label>
-            </td>
-            <td>
-              {assignment.submission.map((type, i) => (
-                <label key={i} className="d-block">
-                  <input type="checkbox" checked readOnly /> {type}
-                </label>
-              ))}
-            </td>
-          </tr> */}
+        <Form.Group className="mb-3">
+          <Form.Label>Available Until</Form.Label>
+          <Form.Control
+            type="date"
+            value={assignment.availableUntil}
+            onChange={(e) =>
+              setAssignment({ ...assignment, availableUntil: e.target.value })
+            }
+          />
+        </Form.Group>
 
-          <tr>
-            <td align="right" valign="top">
-              <label htmlFor="wd-due-date">Due Date</label>
-            </td>
-            <td>
-              <input id="wd-due-date" type="date" defaultValue={assignment.due} />
-            </td>
-          </tr>
-
-          <tr>
-            <td align="right" valign="top">
-              <label>Available From</label>
-            </td>
-            <td>
-              <input id="wd-available-from" type="date" defaultValue={assignment.available} />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <br />
-
-      <div className="d-flex gap-2">
-        <Link href={`/Courses/${cid}/Assignments`}>
-          <button className="btn btn-secondary">Cancel</button>
-        </Link>
-        <button className="btn btn-primary">Save</button>
-      </div>
+        <div className="d-flex gap-2">
+          <Button variant="success" onClick={handleSave}>
+            Save
+          </Button>
+          <Button variant="secondary" onClick={handleCancel}>
+            Cancel
+          </Button>
+        </div>
+      </Form>
     </div>
   );
 }

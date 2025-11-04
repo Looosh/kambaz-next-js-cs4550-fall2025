@@ -1,61 +1,84 @@
 "use client";
-import Link from "next/link";
-import { Form, Button } from "react-bootstrap";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setCurrentUser } from "../reducer";
+import { redirect } from "next/navigation";
+import { Button, FormControl } from "react-bootstrap";
 
 export default function Profile() {
-  return (
-    <div
-      id="wd-profile-screen"
-      className="p-4 d-flex flex-column align-items-center"
-      style={{ maxWidth: "400px", margin: "0 auto" }}
-    >
-      <h3 className="mb-4">Profile</h3>
-      <Form className="w-100">
-        <Form.Control
-          defaultValue="alice"
-          placeholder="Username"
-          className="mb-3 border rounded p-2"
-        />
-        <Form.Control
-          defaultValue="123"
-          placeholder="Password"
-          type="password"
-          className="mb-3 border rounded p-2"
-        />
-        <Form.Control
-          defaultValue="Alice"
-          placeholder="First Name"
-          className="mb-3 border rounded p-2"
-        />
-        <Form.Control
-          defaultValue="Wonderland"
-          placeholder="Last Name"
-          className="mb-3 border rounded p-2"
-        />
-        <Form.Control
-          defaultValue="2000-01-01"
-          type="date"
-          className="mb-3 border rounded p-2"
-        />
-        <Form.Control
-          defaultValue="alice@wonderland"
-          type="email"
-          placeholder="Email"
-          className="mb-3 border rounded p-2"
-        />
-        <Form.Select defaultValue="FACULTY" className="mb-3 border rounded p-2">
-          <option value="USER">User</option>
-          <option value="ADMIN">Admin</option>
-          <option value="FACULTY">Faculty</option>
-          <option value="STUDENT">Student</option>
-        </Form.Select>
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const dispatch = useDispatch();
+  const [profile, setProfile] = useState<any>({});
 
-        <Link href="/Account/Signin" className="w-100 text-decoration-none">
-          <Button variant="danger" className="w-100">
-            Sign Out
+  useEffect(() => {
+    if (!currentUser) redirect("/Account/Signin");
+    else setProfile(currentUser);
+  }, [currentUser]);
+
+  const signout = () => {
+    dispatch(setCurrentUser(null));
+    redirect("/Account/Signin");
+  };
+
+  return (
+    <div className="wd-profile-screen p-4">
+      <h3>Profile</h3>
+      {profile && (
+        <div>
+          <FormControl
+            id="wd-username"
+            className="mb-2"
+            value={profile.username}
+            onChange={(e) => setProfile({ ...profile, username: e.target.value })}
+          />
+          <FormControl
+            id="wd-password"
+            className="mb-2"
+            type="password"
+            value={profile.password}
+            onChange={(e) => setProfile({ ...profile, password: e.target.value })}
+          />
+          <FormControl
+            id="wd-firstname"
+            className="mb-2"
+            value={profile.firstName}
+            onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}
+          />
+          <FormControl
+            id="wd-lastname"
+            className="mb-2"
+            value={profile.lastName}
+            onChange={(e) => setProfile({ ...profile, lastName: e.target.value })}
+          />
+          <FormControl
+            id="wd-dob"
+            className="mb-2"
+            type="date"
+            value={profile.dob}
+            onChange={(e) => setProfile({ ...profile, dob: e.target.value })}
+          />
+          <FormControl
+            id="wd-email"
+            className="mb-2"
+            value={profile.email}
+            onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+          />
+          <select
+            className="form-control mb-2"
+            id="wd-role"
+            value={profile.role}
+            onChange={(e) => setProfile({ ...profile, role: e.target.value })}
+          >
+            <option value="USER">User</option>
+            <option value="ADMIN">Admin</option>
+            <option value="FACULTY">Faculty</option>
+            <option value="STUDENT">Student</option>
+          </select>
+          <Button onClick={signout} className="w-100 mb-2" id="wd-signout-btn">
+            Sign out
           </Button>
-        </Link>
-      </Form>
+        </div>
+      )}
     </div>
   );
 }

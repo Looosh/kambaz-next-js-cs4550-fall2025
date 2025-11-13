@@ -1,3 +1,4 @@
+import EnvironmentVariables from "./EnvironmentVariables";
 export default function Lab5() {
   return (
     <div id="wd-lab5">
@@ -8,5 +9,6 @@ export default function Lab5() {
            Welcome
         </a>
       </div><hr/>
+      <EnvironmentVariables />
     </div>
 );}

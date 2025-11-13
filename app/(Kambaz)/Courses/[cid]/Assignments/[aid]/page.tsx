@@ -1,115 +1,93 @@
+"use client";
+
+import { useParams } from "next/navigation";
+import Link from "next/link";
+import * as db from "../../../../Database"; // adjust path if needed
+
 export default function AssignmentEditor() {
-    return (
-      <div id="wd-assignments-editor">
-        <label htmlFor="wd-name">Assignment Name</label><br />
-        <input id="wd-name" defaultValue="A1 - ENV + HTML" /><br /><br />
-  
-        <textarea id="wd-description" rows={5} cols={50}>
-  The assignment is available online Submit a link to the landing page of your Web application running on Netlify. 
-  The landing page should include the following:
-  - Your full name and section
-  - Links to each of the lab assignments
-  - Link to the Kanbas application
-  - Links to all relevant source code repositories
-  
-  The Kanbas application should also include a link to navigate back to the landing page.
-        </textarea>
-        <br /><br />
-  
-        <table>
-          <tbody>
-            <tr>
-              <td align="right" valign="top">
-                <label htmlFor="wd-points">Points</label>
-              </td>
-              <td>
-                <input id="wd-points" defaultValue={100} />
-              </td>
-            </tr>
-  
-            <tr>
-              <td align="right" valign="top">
-                <label htmlFor="wd-group">Assignment Group</label>
-              </td>
-              <td>
-                <select id="wd-group" defaultValue="ASSIGNMENTS">
-                  <option>ASSIGNMENTS</option>
-                  <option>QUIZZES</option>
-                  <option>EXAMS</option>
-                  <option>PROJECTS</option>
-                </select>
-              </td>
-            </tr>
-  
-            <tr>
-              <td align="right" valign="top">
-                <label htmlFor="wd-display-grade">Display Grade As</label>
-              </td>
-              <td>
-                <select id="wd-display-grade" defaultValue="Percentage">
-                  <option>Percentage</option>
-                  <option>Points</option>
-                  <option>Letter Grade</option>
-                  <option>Complete/Incomplete</option>
-                </select>
-              </td>
-            </tr>
-  
-            <tr>
-              <td align="right" valign="top">
-                <label htmlFor="wd-submission">Submission Type</label>
-              </td>
-              <td>
-                <select id="wd-submission" defaultValue="Online">
-                  <option>Online</option>
-                  <option>On Paper</option>
-                  <option>No Submission</option>
-                </select>
-                <br />
-                <b>Online Entry Options</b><br />
-                <label><input type="checkbox" /> Text Entry</label><br />
-                <label><input type="checkbox" /> Website URL</label><br />
-                <label><input type="checkbox" /> Media Recordings</label><br />
-                <label><input type="checkbox" /> Student Annotation</label><br />
-                <label><input type="checkbox" /> File Uploads</label><br />
-              </td>
-            </tr>
-  
-            <tr>
-              <td align="right" valign="top">
-                <label htmlFor="wd-assign">Assign To</label>
-              </td>
-              <td>
-                <input id="wd-assign" defaultValue="Everyone" />
-              </td>
-            </tr>
-  
-            <tr>
-              <td align="right" valign="top">
-                <label htmlFor="wd-due-date">Due</label>
-              </td>
-              <td>
-                <input id="wd-due-date" type="date" defaultValue="2024-05-13" />
-              </td>
-            </tr>
-  
-            <tr>
-              <td align="right" valign="top">
-                <label>Available from</label>
-              </td>
-              <td>
-                <input id="wd-available-from" type="date" defaultValue="2024-05-06" />
-                &nbsp; Until &nbsp;
-                <input id="wd-available-until" type="date" defaultValue="2024-05-20" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-  
-        <br />
-        <button>Cancel</button>
-        <button>Save</button>
+  const { cid, aid } = useParams();
+
+  // Find the assignment in the database
+  const assignment = db.assignments.find(a => a._id === aid);
+
+  if (!assignment) return <div>Assignment not found</div>;
+
+  return (
+    <div id="wd-assignments-editor" className="p-3" style={{ maxWidth: "800px" }}>
+      <h2>Edit Assignment</h2>
+
+      <label htmlFor="wd-name">Assignment Name</label><br />
+      <input id="wd-name" defaultValue={assignment.title} /><br /><br />
+
+      <label htmlFor="wd-description">Description</label><br />
+      <textarea id="wd-description" rows={5} cols={50} defaultValue={assignment.description}></textarea><br /><br />
+
+      <table>
+        <tbody>
+          <tr>
+            <td align="right" valign="top">
+              <label htmlFor="wd-points">Points</label>
+            </td>
+            <td>
+              <input id="wd-points" type="number" defaultValue={assignment.points} />
+            </td>
+          </tr>
+
+          <tr>
+            <td align="right" valign="top">
+              <label htmlFor="wd-group">Assignment Group</label>
+            </td>
+            <td>
+              <select id="wd-group" defaultValue={assignment.group}>
+                <option>ASSIGNMENTS</option>
+                <option>QUIZZES</option>
+                <option>EXAMS</option>
+                <option>PROJECTS</option>
+              </select>
+            </td>
+          </tr>
+
+          {/* <tr>
+            <td align="right" valign="top">
+              <label htmlFor="wd-submission">Submission Type</label>
+            </td>
+            <td>
+              {assignment.submission.map((type, i) => (
+                <label key={i} className="d-block">
+                  <input type="checkbox" checked readOnly /> {type}
+                </label>
+              ))}
+            </td>
+          </tr> */}
+
+          <tr>
+            <td align="right" valign="top">
+              <label htmlFor="wd-due-date">Due Date</label>
+            </td>
+            <td>
+              <input id="wd-due-date" type="date" defaultValue={assignment.due} />
+            </td>
+          </tr>
+
+          <tr>
+            <td align="right" valign="top">
+              <label>Available From</label>
+            </td>
+            <td>
+              <input id="wd-available-from" type="date" defaultValue={assignment.available} />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <br />
+
+      <div className="d-flex gap-2">
+        <Link href={`/Courses/${cid}/Assignments`}>
+          <button className="btn btn-secondary">Cancel</button>
+        </Link>
+        <button className="btn btn-primary">Save</button>
       </div>
-    );
-  }
-  
+    </div>
+  );
+}

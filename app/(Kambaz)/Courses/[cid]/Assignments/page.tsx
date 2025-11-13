@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { deleteAssignment } from "../Assignments/reducer";
 
-// Define the shape of an assignment
 interface Assignment {
   _id: string;
   name: string;
@@ -16,12 +15,10 @@ interface Assignment {
   availableUntil?: string;
 }
 
-// Redux slice state
 interface AssignmentsState {
   assignments: Assignment[];
 }
 
-// Root Redux state
 interface RootState {
   assignmentsReducer: AssignmentsState;
 }

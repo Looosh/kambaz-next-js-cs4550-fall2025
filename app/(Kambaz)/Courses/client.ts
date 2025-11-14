@@ -5,6 +5,19 @@ const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
 const COURSES_API = `${HTTP_SERVER}/api/courses`;
 const USERS_API = `${HTTP_SERVER}/api/users`;
 
+export interface Course {
+  _id: string;
+  name: string;
+  image?: string;
+  number?: string;
+  startDate?: string;
+  endDate?: string;
+  department?: string;
+  credits?: number;
+  description?: string;
+  [key: string]: unknown;
+}
+
 export const fetchAllCourses = async () => {
   const { data } = await axios.get(COURSES_API);
   return data;
@@ -15,7 +28,7 @@ export const findMyCourses = async () => {
   return data;
 };
 
-export const createCourse = async (course: any) => {
+export const createCourse = async (course: Course) => {
   const { data } = await axiosWithCredentials.post(`${USERS_API}/current/courses`, course);
   return data;
 };

@@ -7,15 +7,18 @@ import { addNewCourse, deleteCourse, updateCourse, setCourses } from "../Courses
 import { useEffect } from "react";
 
 // Define types
-type Course = {
+export interface Course {
   _id: string;
   name: string;
+  image?: string;
   number?: string;
   startDate?: string;
   endDate?: string;
-  image?: string;
+  department?: string;
+  credits?: number;
   description?: string;
-};
+  [key: string]: unknown;
+}
 
 type Enrollment = {
   user: string;
@@ -51,10 +54,11 @@ export default function Dashboard() {
     }
   };
   
-    const onAddNewCourse = async () => {
-    const newCourse = await client.createCourse(courses);
-    dispatch(setCourses([ ...courses, newCourse ]));
-  };
+const onAddNewCourse = async () => {
+  const newCourse: Course = { _id: "1111", name: "New Course" }; // minimal course object
+  const createdCourse = await client.createCourse(newCourse);
+  dispatch(setCourses([...courses, createdCourse]));
+};
 
 
   useEffect(() => {
@@ -71,6 +75,9 @@ export default function Dashboard() {
       <h1>Dashboard</h1>
       <hr />
       <h2>Published Courses ({courses.length})</h2>
+      <button onClick={onAddNewCourse} className="btn btn-primary float-end" id="wd-add-new-course-click" >
+                  Add
+                </button>
       <hr />
       <Row xs={1} md={5} className="g-4">
         {courses.map((course) => (
@@ -87,9 +94,6 @@ export default function Dashboard() {
                 <Button href={`/Courses/${course._id}/Home`} className="me-2">
                   Go
                 </Button>
-                <button onClick={onAddNewCourse} className="btn btn-primary float-end" id="wd-add-new-course-click" >
-                  Add
-                </button>
               </CardBody>
             </Card>
           </Col>

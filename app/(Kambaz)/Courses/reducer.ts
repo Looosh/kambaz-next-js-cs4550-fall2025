@@ -4,9 +4,15 @@ import { v4 as uuidv4 } from "uuid";
 
 export interface Course {
   _id: string;
-  name: string;             
+  name: string;
+  image?: string;
+  number?: string;
+  startDate?: string;
+  endDate?: string;
+  department?: string;
+  credits?: number;
   description?: string;
-  [key: string]: unknown;   
+  [key: string]: unknown;
 }
 
 interface AddCoursePayload {
@@ -29,17 +35,17 @@ const coursesSlice = createSlice({
  reducers: {
    addNewCourse: (state, { payload: course }) => {
      const newCourse = { ...course, _id: uuidv4() };
-     state.courses = [...state.courses, newCourse] as any;
+     state.courses = [...state.courses, newCourse] as Course[];
    },
    deleteCourse: (state, { payload: courseId }) => {
      state.courses = state.courses.filter(
-       (course: any) => course._id !== courseId
+       (course: Course) => course._id !== courseId
      );
    },
    updateCourse: (state, { payload: course }) => {
-     state.courses = state.courses.map((c: any) =>
+     state.courses = state.courses.map((c: Course) =>
        c._id === course._id ? course : c
-     ) as any;
+     ) as Course[];
    },
    setCourses: (state, { payload: courses }) => {
      state.courses = courses;

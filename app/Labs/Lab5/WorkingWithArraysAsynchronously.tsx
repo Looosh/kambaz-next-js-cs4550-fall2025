@@ -6,8 +6,16 @@ import { FaPlusCircle } from "react-icons/fa";
 import { TiDelete } from "react-icons/ti";
 import { FaPencil } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa6";
+
+export interface Todo {
+  id?: number;
+  title: string;
+  completed: boolean;
+  editing?: boolean; // optional, used in the UI
+}
+
 export default function WorkingWithArraysAsynchronously() {
-  const [todos, setTodos] = useState<any[]>([]);
+  const [todos, setTodos] = useState<Todo[]>([]);
   const createNewTodo = async () => {
     const todos = await client.createNewTodo();
     setTodos(todos);
@@ -18,7 +26,7 @@ export default function WorkingWithArraysAsynchronously() {
     setTodos(todos);
   };
 
-   const removeTodo = async (todo: any) => {
+   const removeTodo = async (todo: Todo) => {
     const updatedTodos = await client.removeTodo(todo);
     setTodos(updatedTodos);
   };
@@ -28,7 +36,7 @@ export default function WorkingWithArraysAsynchronously() {
     setTodos([...todos, newTodo]);
   };
 
-  const deleteTodo = async (todo: any) => {
+  const deleteTodo = async (todo: Todo) => {
     try {
       await client.deleteTodo(todo);
       const newTodos = todos.filter((t) => t.id !== todo.id);
@@ -39,14 +47,14 @@ export default function WorkingWithArraysAsynchronously() {
     } 
   };
 
-  const editTodo = (todo: any) => {
+  const editTodo = (todo: Todo) => {
     const updatedTodos = todos.map(
       (t) => t.id === todo.id ? { ...todo, editing: true } : t );
     setTodos(updatedTodos);
   };
 
   const [errorMessage, setErrorMessage] = useState(null);
-  const updateTodo = async (todo: any) => {
+  const updateTodo = async (todo: Todo) => {
     try {
       await client.updateTodo(todo);
       setTodos(todos.map((t) => (t.id === todo.id ? todo : t)));

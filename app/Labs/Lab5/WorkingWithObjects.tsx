@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { FormCheck, FormControl } from "react-bootstrap";
 const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
 
+
 export default function WorkingWithObjects() {
     const [assignment, setAssignment] = useState({
     id: 1, title: "NodeJS Assignment",

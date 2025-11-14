@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { FormControl } from "react-bootstrap";
 const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
-export default function PathParameters() {
+export default function QueryParameters() {
   const [a, setA] = useState("34");
   const [b, setB] = useState("23");
   return (

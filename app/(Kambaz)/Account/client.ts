@@ -45,8 +45,3 @@ export const updateUser = async (user: User): Promise<User> => {
   return response.data;
 };
 
-const COURSES_API = `${HTTP_SERVER}/api/courses`;
-export const fetchAllCourses = async () => {
-  const { data } = await axios.get(COURSES_API);
-  return data;
-};

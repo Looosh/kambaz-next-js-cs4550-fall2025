@@ -28,7 +28,16 @@ interface RootState {
 }
 
 export default function Profile() {
-  const [profile, setProfile] = useState<any>({});
+  const [profile, setProfile] = useState<User>({
+  username: "",
+  password: "",
+  firstName: "",
+  lastName: "",
+  dob: "",
+  email: "",
+  role: "USER",
+});
+
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state: RootState) => state.accountReducer);
 
@@ -42,10 +51,12 @@ export default function Profile() {
     else setProfile(currentUser);
   }, [currentUser]);
 
-  const signout = () => {
+  const signout = async () => {
+    await client.signout();
     dispatch(setCurrentUser(null));
     redirect("/Account/Signin");
   };
+
 
   return (
     <div className="wd-profile-screen p-4">

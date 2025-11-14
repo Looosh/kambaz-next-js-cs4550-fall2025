@@ -21,7 +21,11 @@ interface User {
 }
 
 export default function Signin() {
-const [credentials, setCredentials] = useState<any>({});
+const [credentials, setCredentials] = useState({
+  username: "",
+  password: "",
+});
+
   const dispatch = useDispatch();
   const signin = async () => {
     const user =  await client.signin(credentials);

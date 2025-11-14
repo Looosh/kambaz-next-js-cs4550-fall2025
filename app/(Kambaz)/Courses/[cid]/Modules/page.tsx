@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import * as client from "../../client";
 import { useParams } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { ListGroup, FormControl } from "react-bootstrap";
@@ -11,13 +12,14 @@ import {
   deleteModule,
   editModule,
   updateModule,
+  setModules,
 } from "./reducer";
 
 interface Module {
   _id: string;
   name: string;
   course: string;
-  description: string; 
+  description: string;
   editing?: boolean;
 }
 
@@ -30,33 +32,43 @@ interface RootState {
 }
 
 export default function Modules() {
-  const { cid } = useParams();
   const dispatch = useDispatch();
-  const { modules } = useSelector(
-    (state: RootState) => state.modulesReducer
-  );
+  const params = useParams();
+  const cidParam = params.cid;
+
+  const courseId = Array.isArray(cidParam) ? cidParam[0] : cidParam;
+
+  const { modules } = useSelector((state: RootState) => state.modulesReducer);
+
   const [moduleName, setModuleName] = useState("");
 
-  if (!cid || Array.isArray(cid)) {
-    return <div>Error: Course ID is missing or invalid</div>;
-  }
-  const courseId: string = cid;
+  const fetchModules = async () => {
+    if (!courseId) return;
+    const data = await client.findModulesForCourse(courseId);
+    dispatch(setModules(data));
+  };
 
-  const handleAddModule = () => {
-    if (!moduleName.trim()) return; 
-    dispatch(
-      addModule({
-        name: moduleName,
-        course: courseId,
-        description: "", 
-      })
-    );
+  useEffect(() => {
+    fetchModules();
+  }, [courseId]);
+
+  const handleAddModule = async () => {
+    if (!moduleName.trim() || !courseId) return;
+
+    const newModulePayload = { name: moduleName, course: courseId };
+    const created = await client.createModuleForCourse(courseId, newModulePayload);
+
+    dispatch(setModules([...modules, created]));
     setModuleName("");
   };
 
   const handleUpdateModule = (module: Module, updates: Partial<Module>) => {
     dispatch(updateModule({ ...module, ...updates }));
   };
+
+  if (!courseId) {
+    return <div>Error: Missing or invalid course ID</div>;
+  }
 
   return (
     <div className="wd-modules p-3">
@@ -67,37 +79,35 @@ export default function Modules() {
       />
 
       <ListGroup id="wd-modules" className="rounded-0">
-        {modules
-          .filter((m: Module) => m.course === courseId)
-          .map((module: Module) => (
-            <ListGroup.Item
-              key={module._id}
-              className="d-flex justify-content-between align-items-center"
-            >
-              {!module.editing && <span>{module.name}</span>}
+        {modules.map((module: Module) => (
+          <ListGroup.Item
+            key={module._id}
+            className="d-flex justify-content-between align-items-center"
+          >
+            {!module.editing && <span>{module.name}</span>}
 
-              {module.editing && (
-                <FormControl
-                  className="w-50 d-inline-block"
-                  defaultValue={module.name}
-                  onChange={(e) =>
-                    handleUpdateModule(module, { name: e.target.value })
+            {module.editing && (
+              <FormControl
+                className="w-50 d-inline-block"
+                defaultValue={module.name}
+                onChange={(e) =>
+                  handleUpdateModule(module, { name: e.target.value })
+                }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleUpdateModule(module, { editing: false });
                   }
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleUpdateModule(module, { editing: false });
-                    }
-                  }}
-                />
-              )}
-
-              <ModuleControlButtons
-                moduleId={module._id}
-                deleteModule={(id: string) => dispatch(deleteModule(id))}
-                editModule={(id: string) => dispatch(editModule(id))}
+                }}
               />
-            </ListGroup.Item>
-          ))}
+            )}
+
+            <ModuleControlButtons
+              moduleId={module._id}
+              deleteModule={(id: string) => dispatch(deleteModule(id))}
+              editModule={(id: string) => dispatch(editModule(id))}
+            />
+          </ListGroup.Item>
+        ))}
       </ListGroup>
     </div>
   );

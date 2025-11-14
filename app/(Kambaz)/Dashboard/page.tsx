@@ -45,6 +45,21 @@ export default function Dashboard() {
   const courses = useSelector((state: RootState) => state.coursesReducer.courses);
   const dispatch = useDispatch();
 
+  const onDeleteCourse = async (courseId: string) => {
+    const status = await client.deleteCourse(courseId);
+    dispatch(setCourses(courses.filter((course) => course._id !== courseId)));
+  };
+
+const onUpdateCourse = async (updatedCourse: Course) => {
+  await client.updateCourse(updatedCourse);
+  dispatch(
+    setCourses(
+      courses.map(c => (c._id === updatedCourse._id ? updatedCourse : c))
+    )
+  );
+};
+
+
   const fetchCourses = async () => {
     try {
       const courses = await client.findMyCourses();
@@ -94,6 +109,22 @@ const onAddNewCourse = async () => {
                 <Button href={`/Courses/${course._id}/Home`} className="me-2">
                   Go
                 </Button>
+                <button className="btn btn-danger"
+                onClick={(event) => {
+                  event.preventDefault();
+                  onDeleteCourse(course._id);
+                    }} >
+              Delete
+            </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onUpdateCourse(course); // pass the actual course
+                  }}
+                  className="btn btn-secondary float-end"
+                >
+                  Update
+                </button>
               </CardBody>
             </Card>
           </Col>

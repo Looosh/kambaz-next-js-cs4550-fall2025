@@ -1,8 +1,10 @@
 "use client";
 
-import * as db from "../Database";
-import { useSelector } from "react-redux";
+import * as client from "../Courses/client";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Col, Card, CardBody, CardTitle, CardText, Button } from "react-bootstrap";
+import { addNewCourse, deleteCourse, updateCourse, setCourses } from "../Courses/reducer";
+import { useEffect } from "react";
 
 // Define types
 type Course = {
@@ -38,27 +40,40 @@ interface RootState {
 export default function Dashboard() {
   const currentUser = useSelector((state: RootState) => state.accountReducer.currentUser);
   const courses = useSelector((state: RootState) => state.coursesReducer.courses);
+  const dispatch = useDispatch();
 
-  const enrollments: Enrollment[] = db.enrollments;
+  const fetchCourses = async () => {
+    try {
+      const courses = await client.findMyCourses();
+      dispatch(setCourses(courses));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+    const onAddNewCourse = async () => {
+    const newCourse = await client.createCourse(courses);
+    dispatch(setCourses([ ...courses, newCourse ]));
+  };
+
+
+  useEffect(() => {
+    fetchCourses();
+  }, [currentUser]);
+
+  
+
 
   if (!currentUser || !courses) return <div>This user has no courses, check user database...</div>;
-
-  const enrolledCourses = courses.filter((course) =>
-    enrollments.some(
-      (enrollment) =>
-        enrollment.user === currentUser._id &&
-        enrollment.course === course._id
-    )
-  );
 
   return (
     <div className="p-4" id="wd-dashboard">
       <h1>Dashboard</h1>
       <hr />
-      <h2>Published Courses ({enrolledCourses.length})</h2>
+      <h2>Published Courses ({courses.length})</h2>
       <hr />
       <Row xs={1} md={5} className="g-4">
-        {enrolledCourses.map((course) => (
+        {courses.map((course) => (
           <Col key={course._id} className="wd-dashboard-course" style={{ width: "300px" }}>
             <Card>
               {course.image && course.image.startsWith("/") ? (
@@ -72,6 +87,9 @@ export default function Dashboard() {
                 <Button href={`/Courses/${course._id}/Home`} className="me-2">
                   Go
                 </Button>
+                <button onClick={onAddNewCourse} className="btn btn-primary float-end" id="wd-add-new-course-click" >
+                  Add
+                </button>
               </CardBody>
             </Card>
           </Col>

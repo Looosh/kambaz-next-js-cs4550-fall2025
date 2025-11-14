@@ -44,3 +44,9 @@ export const updateUser = async (user: User): Promise<User> => {
   const response = await axiosWithCredentials.put(`${USERS_API}/${user._id}`, user);
   return response.data;
 };
+
+const COURSES_API = `${HTTP_SERVER}/api/courses`;
+export const fetchAllCourses = async () => {
+  const { data } = await axios.get(COURSES_API);
+  return data;
+};

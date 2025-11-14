@@ -6,6 +6,7 @@ import { setCurrentUser } from "../reducer";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import * as db from "../../Database";
+import * as client from "../client";
 import { FormControl, Button } from "react-bootstrap";
 
 interface User {
@@ -20,26 +21,11 @@ interface User {
 }
 
 export default function Signin() {
-  const [credentials, setCredentials] = useState({ username: "", password: "" });
+const [credentials, setCredentials] = useState<any>({});
   const dispatch = useDispatch();
-
-  const signin = () => {
-
-    const found = db.users.find(
-      (u) =>
-        u.username === credentials.username &&
-        u.password === credentials.password
-    );
-
-    if (!found) return; 
-
-    const user: User = {
-      ...found,
-      role: ["USER", "ADMIN", "FACULTY", "STUDENT"].includes(found.role)
-        ? (found.role as "USER" | "ADMIN" | "FACULTY" | "STUDENT")
-        : undefined,
-    };
-
+  const signin = async () => {
+    const user =  await client.signin(credentials);
+    if (!user) return;
     dispatch(setCurrentUser(user));
     redirect("/Dashboard");
   };

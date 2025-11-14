@@ -6,6 +6,7 @@ import { FaPlusCircle } from "react-icons/fa";
 import { TiDelete } from "react-icons/ti";
 import { FaPencil } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa6";
+import { AxiosError } from "axios";
 
 export interface Todo {
   id?: number;
@@ -16,6 +17,8 @@ export interface Todo {
 
 export default function WorkingWithArraysAsynchronously() {
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const createNewTodo = async () => {
     const todos = await client.createNewTodo();
     setTodos(todos);
@@ -36,16 +39,20 @@ export default function WorkingWithArraysAsynchronously() {
     setTodos([...todos, newTodo]);
   };
 
-  const deleteTodo = async (todo: Todo) => {
-    try {
-      await client.deleteTodo(todo);
-      const newTodos = todos.filter((t) => t.id !== todo.id);
-      setTodos(newTodos);
-      } catch (error: any) {
-      console.log(error);
+const deleteTodo = async (todo: Todo) => {
+  try {
+    await client.deleteTodo(todo);
+    setTodos(todos.filter((t) => t.id !== todo.id));
+  } catch (error: unknown) {
+    if (error instanceof AxiosError && error.response) {
       setErrorMessage(error.response.data.message);
-    } 
-  };
+    } else if (error instanceof Error) {
+      setErrorMessage(error.message);
+    } else {
+      setErrorMessage("Unknown error");
+    }
+  }
+};
 
   const editTodo = (todo: Todo) => {
     const updatedTodos = todos.map(
@@ -53,15 +60,20 @@ export default function WorkingWithArraysAsynchronously() {
     setTodos(updatedTodos);
   };
 
-  const [errorMessage, setErrorMessage] = useState(null);
-  const updateTodo = async (todo: Todo) => {
-    try {
-      await client.updateTodo(todo);
-      setTodos(todos.map((t) => (t.id === todo.id ? todo : t)));
-      } catch (error: any) {
+const updateTodo = async (todo: Todo) => {
+  try {
+    await client.updateTodo(todo);
+    setTodos(todos.map((t) => (t.id === todo.id ? todo : t)));
+  } catch (error: unknown) {
+    if (error instanceof AxiosError && error.response) {
       setErrorMessage(error.response.data.message);
+    } else if (error instanceof Error) {
+      setErrorMessage(error.message);
+    } else {
+      setErrorMessage("Unknown error");
     }
-  };
+  }
+};
 
   useEffect(() => {
     fetchTodos();

@@ -2,8 +2,17 @@
 import React, { useEffect, useState } from "react";
 import * as client from "./client";
 import { FormControl } from "react-bootstrap";
+
+export interface Assignment {
+  id?: number;
+  title?: string;
+  description?: string;
+  due?: string; // or Date if you convert it
+  completed?: boolean;
+}
+
 export default function WorkingWithObjectsAsynchronously() {
-  const [assignment, setAssignment] = useState<any>({});
+  const [assignment, setAssignment] = useState<Assignment>({});
   const fetchAssignment = async () => {
     const assignment = await client.fetchAssignment();
     setAssignment(assignment);

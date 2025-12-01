@@ -5,7 +5,11 @@ import { Nav, NavItem, NavLink } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
 interface AccountState {
-  currentUser: { id: number; name: string } | null;
+  currentUser: {
+    role: string;
+    id: number;
+    name: string;
+  } | null;
 }
 
 interface RootState {
@@ -22,12 +26,26 @@ export default function AccountNavigation() {
 
   return (
     <Nav variant="pills">
+      {/* ADMIN USERS LINK */}
+      {currentUser && currentUser.role === "ADMIN" && (
+        <NavItem>
+          <NavLink
+            as={Link}
+            href="/Account/Users"
+            active={pathname.endsWith("Users")}
+          >
+            Users
+          </NavLink>
+        </NavItem>
+      )}
+
+      {/* MAIN LINKS */}
       {links.map((link) => (
         <NavItem key={link}>
           <NavLink
             as={Link}
             href={`/Account/${link}`}
-            active={pathname.endsWith(link.toLowerCase())}
+            active={pathname.endsWith(link)}
           >
             {link}
           </NavLink>

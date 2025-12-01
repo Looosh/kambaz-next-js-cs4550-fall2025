@@ -5,6 +5,12 @@ const axiosWithCredentials = axios.create({ withCredentials: true });
 export const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
 export const USERS_API = `${HTTP_SERVER}/api/users`;
 
+export const findAllUsers = async () => {
+  const response = await axiosWithCredentials.get(USERS_API);
+  return response.data;
+};
+
+
 interface UserCredentials {
   username: string;
   password: string;

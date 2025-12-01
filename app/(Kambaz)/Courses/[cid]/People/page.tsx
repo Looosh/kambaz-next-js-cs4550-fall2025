@@ -25,15 +25,13 @@ type Enrollment = {
   course: string;
 };
 
-export default function PeopleTable() {
-  const { cid } = useParams();
-  const { users, enrollments } = db as { users: User[]; enrollments: Enrollment[] };
-
-  const filteredUsers = users.filter((usr) =>
-    enrollments.some(
-      (enrollment) => enrollment.user === usr._id && enrollment.course === cid
-    )
-  );
+export default function PeopleTable({ users = [], fetchUsers }: { users?: User[]; fetchUsers: () => void; }) {
+ 
+  // const filteredUsers = users.filter((usr) =>
+  //   enrollments.some(
+  //     (enrollment) => enrollment.user === usr._id && enrollment.course === cid
+  //   )
+  // );
 
   return (
     <div id="wd-people-table" className="container mt-4">
@@ -49,7 +47,7 @@ export default function PeopleTable() {
           </tr>
         </thead>
         <tbody>
-          {filteredUsers.map((user) => (
+          {users.map((user) => (
             <tr key={user._id}>
               <td className="wd-full-name text-nowrap">
                 <FaUserCircle className="me-2 fs-1 text-secondary" />

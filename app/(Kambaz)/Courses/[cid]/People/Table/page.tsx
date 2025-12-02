@@ -19,6 +19,7 @@ type User = {
   section: string;
   lastActivity: string;
   totalActivity: string;
+  test?: string;
 };
 
 type Enrollment = {

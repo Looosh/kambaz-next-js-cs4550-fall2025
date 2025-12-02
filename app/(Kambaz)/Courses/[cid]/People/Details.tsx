@@ -8,6 +8,22 @@ import { FaCheck, FaPencil } from "react-icons/fa6";
 import { FormControl } from "react-bootstrap";
 
 
+interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+  loginId: string;
+  section: string;
+  totalActivity: number;
+  test?: string;
+}
+
+interface PeopleDetailsProps {
+  uid: string | null;
+  onClose: () => void;
+}
+
 export default function PeopleDetails({ uid, onClose }: { uid: string | null; onClose: () => void; }) {
     const deleteUser = async (uid: string) => {
     await client.deleteUser(uid);

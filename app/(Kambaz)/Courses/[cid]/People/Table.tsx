@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import { FaUserCircle } from "react-icons/fa";
-import * as db from "../../../../Database";
-import PeopleDetails from "../Details";
+import * as db from "../../../Database";
+import PeopleDetails from "./Details";
 import Link from "next/link";
 
 type User = {

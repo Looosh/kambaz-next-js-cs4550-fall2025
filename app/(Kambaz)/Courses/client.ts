@@ -71,3 +71,7 @@ export const updateCourse = async (course: Course) => {
 
 
 
+export function deleteCourse(courseId: string) {
+  throw new Error("Function not implemented.");
+}
+

@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import * as client from "../../client";
 import { useParams } from "next/navigation";
@@ -62,9 +63,17 @@ export default function Modules() {
     setModuleName("");
   };
 
+  
+
   const handleUpdateModule = (module: Module, updates: Partial<Module>) => {
     dispatch(updateModule({ ...module, ...updates }));
   };
+
+//    const onRemoveModule = async (moduleId: string) => {
+//    await client.deleteModule(courseId, moduleId);
+//    dispatch(setModules(modules.filter((m: any) => m._id !== moduleId)));
+//  };
+
 
   if (!courseId) {
     return <div>Error: Missing or invalid course ID</div>;
